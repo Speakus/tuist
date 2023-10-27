@@ -188,6 +188,11 @@ public final class SimulatorController: SimulatorControlling {
             return macOSDestination()
         }
 
+        precondition(platform == targetPlatform)
+        if deviceName == "generic" {
+            return "generic/platform=\(platform.caseValue),OS=latest"
+        }
+
         let deviceAndRuntime = try await findAvailableDevice(
             platform: platform,
             version: version,
