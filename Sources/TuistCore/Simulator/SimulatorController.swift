@@ -189,8 +189,15 @@ public final class SimulatorController: SimulatorControlling {
         }
 
         precondition(platform == targetPlatform)
-        if deviceName == "generic" {
-            return "generic/platform=\(platform.caseValue),OS=latest"
+        if let deviceName {
+            let specialCases = [
+                "generic-device": "generic/platform=\(platform.caseValue)",
+                "generic-simulator": "generic/platform=\(platform.caseValue) Simulator",
+            ]
+            if let result = specialCases[deviceName] {
+                return result
+            }
+            logger.warning("deviceName \(deviceName) is different than: [\(specialCases.keys.joined(separator: ","))] - it will cause troubles in multiplatform projects")
         }
 
         let deviceAndRuntime = try await findAvailableDevice(
